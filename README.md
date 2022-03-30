@@ -6,7 +6,12 @@ Zabbix is a mature and effortless enterprise-class open source monitoring soluti
 
 # Introduction
 
+
 This Helm chart installs [Zabbix](https://www.zabbix.com) in a Kubernetes cluster.
+
+Fork自：https://git.zabbix.com/projects/ZT/repos/kubernetes-helm/browse 
+
+为web添加了web service功能以便提供Scheduled reports功能；并添加了新版HA特性。
 
 ### Important note
 
@@ -257,3 +262,10 @@ The following tables lists the configurable parameters of the chart and their de
 | zabbixweb.service.clusterIP | string | `nil` | Cluster IP for Zabbix web |
 | zabbixweb.service.port | int | `80` | Port to expose service |
 | zabbixweb.service.type | string | `"NodePort"` | Type of service for Zabbix web |
+| web_service.enabled | bool | `true` | Enables use of **Zabbix Web Service** |
+| web_service.image.pullPolicy | string | `"IfNotPresent"` | Pull policy of Docker image |
+| web_service.image.pullSecrets | list | `[]` | List of dockerconfig secrets names to use when pulling images |
+| web_service.image.repository | string | `"zabbix/zabbix-web-service"` | Zabbix Web Service Docker image name |
+| web_service.image.tag | string | `"ubuntu-6.0.0"` | Tag of Docker image of Zabbix Web Service |
+| web_service.zbx_allowdip| string | "0.0.0.0/0" | 限制可以访问zabbix web service的ip |
+| web_service.zbx_timeout | int | 30| 指定处理请求的超时时间 |
