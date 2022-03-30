@@ -1,0 +1,44 @@
+{{- if .Values.web_service.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "zabbix.fullname" . }}-web-service
+  labels:
+    app: {{ template "zabbix.fullname" . }}-web-service
+    app.kubernetes.io/name: web-service
+    helm.sh/chart: {{ include "zabbix.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}-web-service
+    app.kubernetes.io/managed-by: {{ .Release.Service }}-web-service
+spec:
+  replicas: {{ .Values.web_service.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "zabbix.fullname" . }}-web-service
+  template:
+    metadata:
+      labels:
+        app: {{ template "zabbix.fullname" . }}-web-service
+        app.kubernetes.io/name: web-service
+        helm.sh/chart: {{ include "zabbix.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}-web-service
+        app.kubernetes.io/managed-by: {{ .Release.Service }}-web-service
+    spec:
+      containers:
+      - name: web-service
+        image: {{ .Values.web_service.image.repository }}:{{ .Values.web_service.image.tag }}
+        imagePullPolicy: {{ .Values.web_service.image.pullPolicy }}
+        securityContext:
+          capabilities:
+            add: ["SYS_ADMIN"]
+        ports:
+          - containerPort: 10053
+            protocol: TCP
+            name: web-service
+        env:
+          - name: ZBX_ALLOWEDIP
+            value: {{ .Values.web_service.zbx_allowdip | quote }}
+          - name: ZBX_LISTENPORT
+            value: "10053"
+          - name: ZBX_TIMEOUT
+            value: {{ .Values.web_service.zbx_timeout | quote }}
+{{- end }}
